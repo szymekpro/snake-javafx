@@ -1,20 +1,41 @@
-package objects;
+package fields;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import objects.Obstacle;
+import objects.ObstacleIterator;
 
-public class Field {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+public class Field {}
+/*
     private int rows;
     private int cols;
     private double squareSize;
     private double offsetX;
     private double offsetY;
+    private List<Obstacle> obstacles;
 
     public Field(int rows, int cols, double squareSize) {
         this.rows = rows;
         this.cols = cols;
         this.squareSize = squareSize;
+        this.obstacles = new ArrayList<>();
+    }
+
+    public void addObstacle(Obstacle obstacle) {
+        obstacles.add(obstacle);
+    }
+
+    public List<Obstacle> getObstacles() {
+        return obstacles;
+    }
+
+
+    public Iterator<Obstacle> getObstacleIterator() {
+        return new ObstacleIterator(obstacles);
     }
 
     public void updateOffset(double canvasWidth, double canvasHeight) {
@@ -42,7 +63,11 @@ public class Field {
                 gc.fillRect(i * squareSize, j * squareSize, squareSize, squareSize);
             }
         }
-
+        Iterator<Obstacle> iterator = getObstacleIterator();
+        while (iterator.hasNext()) {
+            Obstacle obstacle = iterator.next();
+            obstacle.draw(gc);
+        }
         gc.restore();
     }
 
@@ -64,4 +89,4 @@ public class Field {
     public double getOffsetY() {
         return offsetY;
     }
-}
+}*/

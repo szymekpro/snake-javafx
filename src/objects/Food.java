@@ -11,6 +11,7 @@ public class Food {
     private int size = View.getSquareSize();
     private Color[] foodColorArray;
 
+
     public Food() {
         this.foodX = (int)(Math.random() * View.getRows());
         this.foodY = (int)(Math.random() * View.getCols());

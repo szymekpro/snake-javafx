@@ -1,5 +1,9 @@
 package visual;
 
+import fields.AbstractField;
+import fields.EmptyField;
+import fields.Field;
+import fields.SimpleObstaclesField;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -14,15 +18,10 @@ import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
-import objects.Field;
-import objects.Food;
-import objects.GameManager;
-import objects.Snake;
+import objects.*;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class View extends Application {
 
@@ -41,9 +40,8 @@ public class View extends Application {
 
     Snake snake = new Snake();
     Food food = new Food();
-    private Field field;
+    AbstractField field;
     GameManager gameManager = GameManager.getInstance();
-
     Color foodColor;
 
     private static final int right = 0;
@@ -59,7 +57,8 @@ public class View extends Application {
     @Override
     public void start(Stage primaryStage) {
         canvas = new Canvas(width, height);
-        field = new Field(rows, cols, squareSize);
+        //field = new Field(rows, cols, squareSize);
+        field = new SimpleObstaclesField(rows, cols, squareSize);
 
         Group mainGroup = new Group();
         mainGroup.getChildren().add(canvas);
@@ -71,6 +70,11 @@ public class View extends Application {
 
         gc = canvas.getGraphicsContext2D();
         field.updateOffset(canvas.getWidth(), canvas.getHeight());
+
+        //Obstacle obstacle1 = new Obstacle(3, 3, squareSize);
+        //Obstacle obstacle2 = new Obstacle(9, 9, squareSize);
+        //field.addObstacle(obstacle1);
+        //field.addObstacle(obstacle2);
 
         movement(scene);
         foodColor = food.generate(snake);

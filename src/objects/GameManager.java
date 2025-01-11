@@ -1,5 +1,10 @@
 package objects;
 
+import fields.AbstractField;
+import fields.Field;
+
+import java.util.Iterator;
+
 public class GameManager {
     private static GameManager instance;
     static int score = 0;
@@ -40,10 +45,22 @@ public class GameManager {
         }
     }
 
-    public void gameOver(Snake snake, Field field) {
+    public void gameOver(Snake snake, AbstractField field) {
         if (snake.getHead().x < 0 || snake.getHead().y < 0 || snake.getHead().x >= field.getCols() || snake.getHead().y  >= field.getRows()) {
             isOver = true;
         }
+
+        Iterator<Obstacle> iterator = field.getObstacleIterator();
+        while (iterator.hasNext()) {
+            Obstacle obstacle = iterator.next();
+            if ((snake.getHead().x == obstacle.getX() && snake.getHead().y == obstacle.getY()) ||
+                    (snake.getHead().x == obstacle.getX() - obstacle.getSize() &&
+                            snake.getHead().y == obstacle.getY() - obstacle.getSize())) {
+                isOver = true;
+                break;
+            }
+        }
+
         for (int i = 1; i < snake.getBody().size() ; i++) {
             if (snake.getHead().x == snake.getBody().get(i).x && snake.getHead().y == snake.getBody().get(i).y) {
                 isOver = true;
