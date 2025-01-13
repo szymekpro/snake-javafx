@@ -1,0 +1,38 @@
+.basicButton {
+    -fx-background-color: #888888;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+.basicButton:hover {
+    -fx-background-color: #aaaaaa;
+}
+.difficultyButton {
+    -fx-background-color: #888888;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 1px;
+}
+.difficultyButton:hover {
+    -fx-background-color: #aaaaaa;
+}
+.difficultyButton.selected {
+    -fx-background-color: #aaaaaa;
+}
+.mapSwitch {
+    -fx-background-color: #888888;
+    -fx-text-fill: white;
+    -fx-font-family: Arial;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 1px;
+}
+.mapSwitch:hover {
+    -fx-background-color: #aaaaaa;
+}
+.menu {
+
+}

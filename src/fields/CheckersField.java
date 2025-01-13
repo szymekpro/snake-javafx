@@ -9,33 +9,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SimpleObstaclesField extends AbstractField implements IField{
+public class CheckersField extends AbstractField implements IField{
 
     private List<Obstacle> obstacles;
 
-    public SimpleObstaclesField(int rows, int cols, double squareSize) {
+    public CheckersField(int rows, int cols, double squareSize) {
         super(rows, cols, squareSize);
         this.obstacles = new ArrayList<>();
         this.setObstacles();
     }
 
     public void setObstacles() {
-        Obstacle obstacle1 = new Obstacle(2, 2, squareSize);
-        Obstacle obstacle2 = new Obstacle(rows - 3 , 2, squareSize);
-        Obstacle obstacle3 = new Obstacle(2, rows - 3, squareSize);
-        Obstacle obstacle4 = new Obstacle(rows - 3, rows - 3, squareSize);
-        Obstacle obstacle5 = new Obstacle(4, 5, squareSize);
-        Obstacle obstacle6 = new Obstacle(rows - 5 , 4, squareSize);
-        Obstacle obstacle7 = new Obstacle(5, rows - 5, squareSize);
-        Obstacle obstacle8 = new Obstacle(rows - 5, rows - 5, squareSize);
-        this.obstacles.add(obstacle1);
-        this.obstacles.add(obstacle2);
-        this.obstacles.add(obstacle3);
-        this.obstacles.add(obstacle4);
-        this.obstacles.add(obstacle5);
-        this.obstacles.add(obstacle6);
-        this.obstacles.add(obstacle7);
-        this.obstacles.add(obstacle8);
+        for (int x = 2; x < rows; x += 4) {
+            for (int y = 2; y < cols; y += 4) {
+                obstacles.add(new Obstacle(x, y, squareSize));
+            }
+        }
     }
 
     @Override

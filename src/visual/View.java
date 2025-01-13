@@ -1,9 +1,6 @@
 package visual;
 
-import fields.AbstractField;
-import fields.EmptyField;
-import fields.Field;
-import fields.SimpleObstaclesField;
+import fields.*;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -12,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -30,67 +28,238 @@ public class View extends Application {
     private static final int rows = 26;
     private static final int cols = rows;
     private static final int squareSize = width / rows;
-    private double offsetX;
-    private double offsetY;
 
     private Canvas canvas;
     private GraphicsContext gc;
     private Image snakeHeadImage;
     private Image snakeBodyPartImage;
+    private Timeline timeline;
 
-    Snake snake = new Snake();
-    Food food = new Food();
+    Snake snake;
+    Food food;
     AbstractField field;
     GameManager gameManager = GameManager.getInstance();
-    Color foodColor;
+    Image foodImg;
 
     private static final int right = 0;
     private static final int left = 1;
     private static final int up = 2;
     private static final int down = 3;
 
+    private double offsetX = (width - (cols * squareSize)) / 2;
+    private double offsetY = (height - (rows * squareSize)) / 2;
+
+    private Scene menuScene , gameScene;
+    private Stage primaryStage;
+    private Group menuGroup = new Group();
 
     private int currDirection;
-    private int lastDirection;
     private boolean directionChanged = false;
+    private boolean isPaused = false;
+    private int currButton = 0;
+
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
         canvas = new Canvas(width, height);
-        //field = new Field(rows, cols, squareSize);
-        field = new SimpleObstaclesField(rows, cols, squareSize);
+        gc = canvas.getGraphicsContext2D();
 
-        Group mainGroup = new Group();
-        mainGroup.getChildren().add(canvas);
-        Scene scene = new Scene(mainGroup);
 
-        primaryStage.setTitle("wężuu");
-        primaryStage.setScene(scene);
+        menuGroup.getStyleClass().add("menu");
+
+        Scene menuScene = new Scene(menuGroup , 800, 900, Color.WHITE);
+        menuScene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+
+        menuGroup.getChildren().add(canvas);
+        drawMenu(gc);
+
+
+        this.menuScene = menuScene;
+
+        primaryStage.setTitle("Wężuu - Menu");
+        primaryStage.setScene(menuScene);
+        primaryStage.show();
+    }
+
+    private void startGame() {
+        canvas = new Canvas(width, height);
+
+        snake = new Snake();
+        food = new Food();
+
+        switch (currButton) {
+            case 0:
+                field = new EmptyField(rows,cols,squareSize);
+                break;
+            case 1:
+                field = new CrossField(rows,cols,squareSize);
+                break;
+            case 2:
+                field = new CheckersField(rows,cols,squareSize);
+                break;
+            case 3:
+                field = new PassagesField(rows,cols,squareSize);
+                break;
+        }
+
+        Group gameGroup = new Group();
+        gameGroup.getChildren().add(canvas);
+        gameScene = new Scene(gameGroup);
+
+        primaryStage.setTitle("Wężuu");
+        primaryStage.setScene(gameScene);
         primaryStage.show();
 
         gc = canvas.getGraphicsContext2D();
         field.updateOffset(canvas.getWidth(), canvas.getHeight());
 
-        //Obstacle obstacle1 = new Obstacle(3, 3, squareSize);
-        //Obstacle obstacle2 = new Obstacle(9, 9, squareSize);
-        //field.addObstacle(obstacle1);
-        //field.addObstacle(obstacle2);
-
-        movement(scene);
-        foodColor = food.generate(snake);
-        gameManager.setDifficulty("hard");
+        foodImg = food.generate(snake, field);
+        movement(gameScene);
 
         primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> field.draw(gc));
         primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> field.draw(gc));
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(gameManager.getDiffTime()),e -> run(gc)));
+        timeline = new Timeline(new KeyFrame(Duration.millis(gameManager.getDiffTime()), e -> run(gc)));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
+    public void drawMenu(GraphicsContext gc) {
+        gc.save();
+
+        gc.translate(offsetX, offsetY);
+
+
+        Button startButton = new Button("Start Game");
+        Button exitButton = new Button("Exit");
+        Button easyButton = new Button("Easy");
+        Button mediumButton = new Button("Medium");
+        Button hardButton = new Button("Hard");
+        Button mapSwitch = new Button("Empty field");
+
+        startButton.setLayoutX((rows /2 - 4 ) * squareSize + offsetX);
+        startButton.setLayoutY((rows/2  - 6) * squareSize + offsetY);
+        startButton.setPrefSize(8 * squareSize, 2 * squareSize);
+        startButton.getStyleClass().add("basicButton");
+
+        easyButton.setLayoutX((rows /2 - 4 ) * squareSize + offsetX);
+        easyButton.setLayoutY((rows/2  - 3) * squareSize + offsetY);
+        easyButton.setPrefSize(2 * squareSize, 2 * squareSize);
+        easyButton.getStyleClass().add("difficultyButton");
+
+        mediumButton.setLayoutX((rows /2 - 1 ) * squareSize + offsetX);
+        mediumButton.setLayoutY((rows/2  - 3) * squareSize + offsetY);
+        mediumButton.setPrefSize(2 * squareSize, 2 * squareSize);
+        mediumButton.getStyleClass().add("difficultyButton");
+
+        hardButton.setLayoutX((rows /2 + 2 ) * squareSize + offsetX);
+        hardButton.setLayoutY((rows/2  - 3) * squareSize + offsetY);
+        hardButton.setPrefSize(2 * squareSize, 2 * squareSize);
+        hardButton.getStyleClass().add("difficultyButton");
+
+        exitButton.setLayoutX((rows /2 - 4 ) * squareSize + offsetX);
+        exitButton.setLayoutY((rows/2 ) * squareSize + offsetY);
+        exitButton.setPrefSize(8 * squareSize, 2 * squareSize);
+        exitButton.getStyleClass().add("basicButton");
+
+        mapSwitch.setLayoutX((rows /2 - 3 ) * squareSize + offsetX);
+        mapSwitch.setLayoutY((rows/2 + 4) * squareSize + offsetY);
+        mapSwitch.setPrefSize(6 * squareSize, 3 * squareSize);
+        mapSwitch.getStyleClass().add("mapSwitch");
+
+        menuGroup.getChildren().addAll(startButton, easyButton, mediumButton, hardButton, exitButton, mapSwitch);
+
+        startButton.setOnAction(e -> {
+            startGame();
+        });
+
+        easyButton.setOnAction(e -> {
+            easyButton.getStyleClass().add("selected");
+            mediumButton.getStyleClass().remove("selected");
+            hardButton.getStyleClass().remove("selected");
+            gameManager.setDifficulty("easy");
+
+        });
+
+        mediumButton.setOnAction(e -> {
+            mediumButton.getStyleClass().add("selected");
+            easyButton.getStyleClass().remove("selected");
+            hardButton.getStyleClass().remove("selected");
+            gameManager.setDifficulty("medium");
+        });
+
+        hardButton.setOnAction(e -> {
+            hardButton.getStyleClass().add("selected");
+            easyButton.getStyleClass().remove("selected");
+            mediumButton.getStyleClass().remove("selected");
+            gameManager.setDifficulty("hard");
+        });
+
+        mapSwitch.setOnAction(e-> {
+            currButton++;
+            switch (currButton) {
+                case 1:
+                    mapSwitch.setText("Cross Field");
+                    break;
+                case 2:
+                    mapSwitch.setText("Checkers Field");
+                    break;
+                case 3:
+                    mapSwitch.setText("Passages Field");
+                    break;
+                case 4:
+                    mapSwitch.setText("Empty Field");
+                    currButton = 0;
+                    break;
+            }
+
+
+        });
+
+        exitButton.setOnAction(e -> {
+            primaryStage.close();
+        });
+
+        drawMenuBackground(gc);
+
+        gc.restore();
+    }
+
+    public void drawMenuBackground(GraphicsContext gc) {
+
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(4);
+        gc.strokeRect(0, 0, cols * squareSize, rows * squareSize);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if ((i + j) % 2 == 0) {
+                    gc.setFill(Color.web("AAD751"));
+                } else {
+                    gc.setFill(Color.web("A2D149"));
+                }
+                gc.fillRect(i * squareSize, j * squareSize, squareSize, squareSize);
+            }
+        }
+
+    }
+
+    private void togglePause() {
+        if (isPaused) {
+            timeline.play();
+        } else {
+            timeline.pause();
+        }
+        isPaused = !isPaused;
+    }
+
     private void run(GraphicsContext gc) {
+
         directionChanged = false;
         if (gameManager.isOver()) {
+
             drawGameOver(gc);
             return;
         }
@@ -136,7 +305,8 @@ public class View extends Application {
                 break;
         }
         gameManager.gameOver(snake,field);
-        foodColor = snake.eat(food,foodColor);
+
+        foodImg = snake.eat(food,foodImg,field);
     }
 
     public static void launchGame() {
@@ -144,11 +314,20 @@ public class View extends Application {
     }
 
     private void movement(Scene scene) {
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (directionChanged) return;
                 KeyCode code = event.getCode();
+                if (code == KeyCode.G) {
+                    togglePause();
+                    drawPause(gc);
+                    return;
+                }
+                if (isPaused) {
+                    return;
+                }
                 if (code == KeyCode.RIGHT || code == KeyCode.D) {
                     if (currDirection != left) {
                         currDirection = right;
@@ -178,9 +357,8 @@ public class View extends Application {
         double foodX = food.getFoodX() * squareSize + field.getOffsetX();
         double foodY = food.getFoodY() * squareSize + field.getOffsetY();
 
-        gc.setFill(foodColor);
-        //gc.fillRect(food.getFoodX() * squareSize, food.getFoodY() * squareSize, squareSize, squareSize);
-        gc.fillRoundRect(foodX, foodY, squareSize, squareSize, 40,40);
+        gc.drawImage(foodImg,foodX, foodY, squareSize, squareSize);
+
     }
 
     private void drawSnake(GraphicsContext gc) {
@@ -239,16 +417,36 @@ public class View extends Application {
             }
             gc.drawImage(snakeBodyPartImage, -squareSize / 2, -squareSize / 2, squareSize, squareSize);
             gc.restore();
-            //gc.fillRoundRect(snake.getBody().get(i).getX() * squareSize, snake.getBody().get(i).getY() * squareSize, squareSize - 1,squareSize - 1,20,20);
-            //gc.drawImage(snakeBodyPartImage,snake.getBody().get(i).getX() * squareSize, snake.getBody().get(i).getY() * squareSize, squareSize - 1,squareSize - 1);
 
         }
     }
 
     private void drawGameOver(GraphicsContext gc) {
         gc.setFill(Color.RED);
-        gc.setFont(new javafx.scene.text.Font("Digital", 70));
-        gc.fillText("GAME OVER", width / 3.5, height / 2);
+        gc.setFont(new javafx.scene.text.Font("Arial", 60));
+        gc.fillText("GAME OVER", 7 * squareSize + offsetX, 13 * squareSize + offsetY);
+
+        gc.setFill(Color.WHITE);
+        gc.setFont(new javafx.scene.text.Font("Arial", 40));
+        gc.fillText("Your score: " + gameManager.getScore(), 9 * squareSize + offsetX, 15 * squareSize + offsetY);
+
+        gameScene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.M) {
+                drawMenu(gc);
+                primaryStage.setScene(menuScene);
+                gameManager.unsetOver();
+                togglePause();
+                isPaused = false;
+                gameManager.resetScore();
+            }
+        });
+
+    }
+    private void drawPause(GraphicsContext gc) {
+        gc.setFill(Color.WHITE);
+        gc.setFont(new javafx.scene.text.Font("Digital", 50));
+        gc.fillText("PAUSED", width / 2.75, height / 2);
+
     }
 
     private void drawScore() {

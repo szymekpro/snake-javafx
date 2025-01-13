@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class GameManager {
     private static GameManager instance;
-    static int score = 0;
+    private static int score = 0;
     private int difficulty = 2;
     private int diffTime = 130;
     private boolean isOver = false;
@@ -67,6 +67,8 @@ public class GameManager {
                 break;
             }
         }
+
+
     }
 
     public boolean isOver() {
@@ -75,6 +77,10 @@ public class GameManager {
 
     public void setOver() {
         this.isOver = true;
+    }
+
+    public void unsetOver() {
+        this.isOver = false;
     }
 
     public static GameManager getInstance() {
@@ -86,6 +92,10 @@ public class GameManager {
 
     public int getScore() {
         return score;
+    }
+
+    public void resetScore() {
+        score = 0;
     }
 
     public static void addScore(int value) {

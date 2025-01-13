@@ -1,9 +1,11 @@
 package objects;
 
+import fields.AbstractField;
 import visual.View;
 
 import java.awt.*;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 import java.util.ArrayList;
 
 public class Snake {
@@ -19,16 +21,19 @@ public class Snake {
         }
         this.head = this.body.get(0);
     }
-    public Color eat(Food food, Color lastColor) {
-        Color newColor = null;
+
+    public Image eat(Food food, Image lastImg, AbstractField field) {
+        Image newFoodImg = null;
         if (this.getHead().x == food.getFoodX() && this.getHead().y == food.getFoodY()) {
-            this.addBodyPart(new Point(-1,-1)); // rysuje poza plansza, quick fix wyrzucenie obiektow z poza planszy, ew. TODO
-            newColor = food.generate(this);
+            food.applyEffect(this);
+            //this.addBodyPart(new Point(-1,-1)); // rysuje poza plansza, quick fix wyrzucenie obiektow z poza planszy, ew. TODO
+            newFoodImg = food.generate(this,field);
             GameManager.addScore(1);
-            return newColor;
+            return newFoodImg;
         }
-        return lastColor;
+        return lastImg;
     }
+
     public String getSnakeBodyPartImage() {
         return this.snakeBodyPartImage;
     }
@@ -47,6 +52,7 @@ public class Snake {
     public void movementDown() {
         this.head.y++;
     }
+
     public void setBodyPart(int index, Point newPoint) {
         body.set(index, newPoint);
     }
