@@ -305,8 +305,8 @@ public class View extends Application {
                 break;
         }
         gameManager.gameOver(snake,field);
-
         foodImg = snake.eat(food,foodImg,field);
+        foodImg = food.getFoodImage();
     }
 
     public static void launchGame() {
@@ -390,8 +390,7 @@ public class View extends Application {
         gc.drawImage(snakeHeadImage, -squareSize / 2, -squareSize / 2, squareSize, squareSize);
 
         gc.restore();
-
-        //gc.setFill(Color.web("f40fea"));
+        
         for (int i = 1; i < snake.getBody().size() ; i++) {
             Point segment = snake.getBody().get(i); // wytlumaczenie w snake.java
             if (field.isOutOfBounds(segment.x, segment.y)) {
@@ -407,13 +406,13 @@ public class View extends Application {
             Point prevPart = snake.getBody().get(i - 1);
 
             if (currentPart.x > prevPart.x) {
-                gc.rotate(-90); // Poruszanie w prawo
+                gc.rotate(-90);
             } else if (currentPart.x < prevPart.x) {
-                gc.rotate(90); // Poruszanie w lewo
+                gc.rotate(90);
             } else if (currentPart.y > prevPart.y) {
-                gc.rotate(0); // Poruszanie w dół
+                gc.rotate(0);
             } else if (currentPart.y < prevPart.y) {
-                gc.rotate(180); // Poruszanie w górę
+                gc.rotate(180);
             }
             gc.drawImage(snakeBodyPartImage, -squareSize / 2, -squareSize / 2, squareSize, squareSize);
             gc.restore();

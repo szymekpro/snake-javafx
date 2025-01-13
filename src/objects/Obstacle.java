@@ -31,7 +31,7 @@ public class Obstacle {
         gc.setLineWidth(4);
         gc.strokeRoundRect(x * size, y *size, size, size,20,20);
 
-        gc.setFill(Color.GRAY);  // Change color according to the requirement
+        gc.setFill(Color.GRAY);
         gc.fillRoundRect(x * size, y * size, size, size,20,20);
     }
 }

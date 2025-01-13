@@ -8,7 +8,7 @@ public class LoseBodyPartState implements IFoodState {
     public void applyEffect(Snake snake) {
         if (snake.getBody().size() > 1) {
             snake.getBody().remove(snake.getBody().size() - 1);
-            GameManager.addScore(-1);
+            GameManager.addScore(- 2);
         }
     }
 }

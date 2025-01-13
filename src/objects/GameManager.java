@@ -1,7 +1,6 @@
 package objects;
 
 import fields.AbstractField;
-import fields.Field;
 
 import java.util.Iterator;
 
@@ -47,6 +46,10 @@ public class GameManager {
 
     public void gameOver(Snake snake, AbstractField field) {
         if (snake.getHead().x < 0 || snake.getHead().y < 0 || snake.getHead().x >= field.getCols() || snake.getHead().y  >= field.getRows()) {
+            isOver = true;
+        }
+
+        if (snake.getBody().isEmpty()) {
             isOver = true;
         }
 
