@@ -236,9 +236,9 @@ public class View extends Application {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if ((i + j) % 2 == 0) {
-                    gc.setFill(Color.web("AAD751"));
+                    gc.setFill(Color.web("99cc2e"));
                 } else {
-                    gc.setFill(Color.web("A2D149"));
+                    gc.setFill(Color.web("96c82d"));
                 }
                 gc.fillRect(i * squareSize, j * squareSize, squareSize, squareSize);
             }
@@ -390,7 +390,7 @@ public class View extends Application {
         gc.drawImage(snakeHeadImage, -squareSize / 2, -squareSize / 2, squareSize, squareSize);
 
         gc.restore();
-        
+
         for (int i = 1; i < snake.getBody().size() ; i++) {
             Point segment = snake.getBody().get(i); // wytlumaczenie w snake.java
             if (field.isOutOfBounds(segment.x, segment.y)) {
@@ -443,7 +443,7 @@ public class View extends Application {
     }
     private void drawPause(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
-        gc.setFont(new javafx.scene.text.Font("Digital", 50));
+        gc.setFont(new javafx.scene.text.Font("Arial", 50));
         gc.fillText("PAUSED", width / 2.75, height / 2);
 
     }
@@ -456,7 +456,7 @@ public class View extends Application {
         gc.fillRect(scoreX, scoreY - 35, 120, 40);
 
         gc.setFill(Color.BLACK);
-        gc.setFont(new javafx.scene.text.Font("Digital", 30));
+        gc.setFont(new javafx.scene.text.Font("Arial", 30));
         gc.fillText("Score: " + gameManager.getScore(), scoreX, scoreY);
     }
 

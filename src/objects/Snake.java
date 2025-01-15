@@ -28,7 +28,6 @@ public class Snake {
             food.applyEffect(this);
             //this.addBodyPart(new Point(-1,-1)); // rysuje poza plansza, quick fix wyrzucenie obiektow z poza planszy, ew. TODO
             newFoodImg = food.generate(this,field);
-            System.out.println(newFoodImg.getUrl());
             food.startRelocationTimer();
             GameManager.addScore(1);
             return newFoodImg;

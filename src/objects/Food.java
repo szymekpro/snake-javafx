@@ -54,7 +54,6 @@ public class Food {
     private void assignRandomState() {
         Random random = new Random();
         int chance = random.nextInt(100);
-        System.out.println(chance);
         if (chance < 10) {
             this.foodState = new LoseBodyPartState();
             this.foodImage = new Image("/images/szczoch.png");

@@ -31,9 +31,9 @@ public class EmptyField extends AbstractField implements IField {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if ((i + j) % 2 == 0) {
-                    gc.setFill(Color.web("AAD751"));
+                    gc.setFill(Color.web("96c82d"));
                 } else {
-                    gc.setFill(Color.web("A2D149"));
+                    gc.setFill(Color.web("99cc2e"));
                 }
                 gc.fillRect(i * squareSize, j * squareSize, squareSize, squareSize);
             }
